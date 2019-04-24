@@ -1,0 +1,9 @@
+//查询该月对应的四周或者五周
+
+select  *  from FR_MS_SWINE_RPT_EFF_PORCITEC    T where T.REPORT_TYPE='WEEK' and T.PARITY='99' and   T.ORG_CODE='031422111'  And T.SUB_CATEGORY='10.1010'
+And T.BREEDER='TOTAL'   AND T.START_DATE > (to_date('2015/12/01','YYYY/MM/DD') -7)   And   T.END_DATE < (to_date('2015/12/31','YYYY/MM/DD') +7)  
+order by T.START_DATE asc  ;
+
+//查询该月的月数据
+select * from FR_MS_SWINE_RPT_EFF_PORCITEC    T where T.REPORT_TYPE='MONTH' and T.PARITY='99' and   T.ORG_CODE='031422111'  And T.SUB_CATEGORY='10.1010'
+And T.BREEDER='TOTAL'   AND   to_char(T.END_DATE,'YYYY/MM/DD')='2015/12/31'

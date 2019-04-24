@@ -1,0 +1,14 @@
+select T.* 
+, round(decode(val_20_1192,0,0,val_40_1090*365*100/val_20_1192),2)  val_40_1160_must_be
+ from (
+select 'check calculate replacement rate' , org_code,farm_org,start_date,end_date
+,sum(case when sub_category in ('40.1090') then val else 0 end ) val_40_1090
+,sum(case when sub_category in ('40.1161') then val else 0 end ) val_40_1161
+,sum(case when sub_category in ('20.1192') then val else 0 end ) val_20_1192
+,sum(case when sub_category in ('40.1160') then val else 0 end ) val_40_1160
+from FR_MS_SWINE_RPT_EFF_PORCITEC
+where  report_type = 'WEEK' 
+and breeder = 'TOTAL'
+group by org_code,farm_org,start_date,end_date
+) T
+where val_40_1090 > 0 and val_40_1160 <= 0
