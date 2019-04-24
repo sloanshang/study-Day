@@ -1,1 +1,0 @@
-export const DEFAULT_FARM_CODE='000000-0-0'

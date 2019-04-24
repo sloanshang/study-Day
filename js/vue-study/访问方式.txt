@@ -1,3 +1,0 @@
-1.全局安装npm install http-server -g
-2.进入到开发目录，然后运行http-server
-3.安装好之后，默认的访问路径为: http://localhost:8080
