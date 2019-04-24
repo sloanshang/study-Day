@@ -1,0 +1,69 @@
+	@RequestMapping(value = "/{orgCode}/{farmOrg}/{breeder}/exportExcel", method = RequestMethod.GET)
+	public void exportBpSVExcel(@PathVariable String orgCode, @PathVariable String farmOrg,
+			@PathVariable String breeder,
+			HttpServletRequest request,
+			HttpServletResponse response) throws ParseException, NoSuchMethodException, SecurityException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
+		String language = request.getAttribute("language").toString();
+		ProductReportRequest productReportRequest = new ProductReportRequest();
+		productReportRequest.setBreeder(breeder);
+		productReportRequest.setDatasFlag("1");
+		productReportRequest.setGdType(Arrays.asList("SWBD0101"));
+		productReportRequest.setGdCode(Arrays.asList("1001"));
+		List<Map<String,Object>> ret= (List<Map<String, Object>>) doReport(productReportRequest, language, orgCode, farmOrg,
+				t -> commonService.getFarmDataSource(orgCode));
+		if(ret != null  && ret.size() > 0) {
+			HSSFWorkbook workBook = new HSSFWorkbook();
+			HSSFSheet sheet = workBook.createSheet("sheet");
+			ExportUtil exportUtil = new ExportUtil(workBook, sheet);
+			// sheet.addMergedRegion(new CellRangeAddress(0,2,0,255));
+			// 构建Excel标题
+			HSSFRow headRow = sheet.createRow(0);
+			headRow.setHeight((short) (200 * 3));
+			HSSFCell cell = null;
+			cell = headRow.createCell(0);
+			cell.setCellValue("BPSV-Export");
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 12));
+			cell.setCellStyle(exportUtil.getHeadHssStyle());
+			
+			// 构建导出报表明细
+			HSSFRow subHeadRow = sheet.createRow(1);
+			cell = subHeadRow.createCell(0);
+			cell.setCellStyle(exportUtil.getHeadStyle());
+			cell.setCellValue("品种");
+			cell = subHeadRow.createCell(1);
+			cell.setCellValue("母猪");
+			cell = subHeadRow.createCell(2);
+			cell.setCellValue("当前胎次");
+			cell = subHeadRow.createCell(3);
+			cell.setCellValue("前一次分娩日期");
+			cell = subHeadRow.createCell(4);
+			cell.setCellValue("BVSP");
+			cell = subHeadRow.createCell(5);
+			cell.setCellValue("RANK");
+		
+			for (int k = 0; k < ret.size(); k++) {		
+				HSSFRow bodyRow = sheet.createRow(k + 2);
+				
+				cell = bodyRow.createCell(0);
+				cell.setCellValue(ret.get(k).get("BREEDER_NAME").toString());
+				cell.setCellStyle(exportUtil.getBodyStyle());
+				cell = bodyRow.createCell(1);
+				cell.setCellValue(ret.get(k).get("SWINE_TRACK").toString());
+				cell = bodyRow.createCell(2);
+				cell.setCellValue(ret.get(k).get("CURRENT_PARITY").toString());
+				cell = bodyRow.createCell(3);
+				cell.setCellValue(ret.get(k).get("FARROW_DATE").toString());
+				cell = bodyRow.createCell(4);
+				cell.setCellValue(ret.get(k).get("BVSP").toString());
+				cell = bodyRow.createCell(5);
+				cell.setCellValue(ret.get(k).get("RANK").toString());
+				
+			}
+			response.setContentType("application/x-msdownload");	
+			response.addHeader("Content-Disposition", "attachment;fileName=bpsv.xls" );
+		//	OutputStream out = new BufferedOutputStream(response.getOutputStream());
+		//	workBook.write(out);	
+			 workBook.write(response.getOutputStream());	
+		}
+	}

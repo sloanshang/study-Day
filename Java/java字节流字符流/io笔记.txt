@@ -1,0 +1,66 @@
+1. OutputStreamWrite
+2. InputStreamReader
+3. BufferReader
+4. BufferWrite
+5. BufferInputStream(同FileInputStream)
+6. BufferOutputStream(同FileOutputStream)
+7. ByteArrayInputStream
+8. ByteArrayOutputStream
+9. (OutputStream的子类)System.out,System.err
+10（InputStream的子类）System.in
+11. FileWriter ,FileReader
+13. FileOutputStream ,FileInputStream
+
+
+
+
+public class InputStreamTest {
+    private static final String FILENAME="E:\\电影\\[高清电影]阿甘正传.1994.美国.中文字幕.1280x720.rmvb";
+    public static void main(String[] args) throws IOException {
+        long l1 = readByBufferedInputStream();
+        long l2 = readByInputStream();
+        System.out.println("通过BufferedInputStream读取用时："+l1+";通过InputStream读取用时："+l2);
+    }
+ 
+    public static long readByInputStream() throws IOException {
+        InputStream in=new FileInputStream(FILENAME);
+        byte[] b=new byte[8192];
+        int l=0;
+        long start=System.currentTimeMillis();
+        while(in.read(b,0,8192)!=-1){
+        }
+        long end=System.currentTimeMillis();
+        return end-start;
+    }
+ 
+    public static long readByBufferedInputStream() throws IOException {
+        BufferedInputStream in=new BufferedInputStream(new FileInputStream(FILENAME));
+        byte[] b=new byte[8192];
+        int l=0;
+        long start=System.currentTimeMillis();
+        while(in.read(b,0,8192)!=-1){
+        }
+        long end=System.currentTimeMillis();
+        return end-start;
+    }
+}
+
+
+以上代码，一共有两个方法，第一个就是用InputStream读取数据的，第二个就是用BufferedInputStream读取数据的，其他的代码都一样，至于缓冲数组大小为8192是因为BufferedInputStream里面的默认数组大小就是8192的。我那个文件大小是1.46G。
+
+但是运行结果很令我诧异：
+通过BufferedInputStream读取用时：705;通过InputStream读取用时：669
+通过BufferedInputStream读取用时：727;通过InputStream读取用时：690
+通过BufferedInputStream读取用时：721;通过InputStream读取用时：689
+两者都为256K时,通过BufferedInputStream读取用时：2220;通过InputStream读取用时：2319
+
+
+不带缓冲的操作，每读一个字节就要写入一个字节，由于涉及磁盘的IO操作相比内存的操作要慢很多，所以不带缓冲的流效率很低。带缓冲的流，可以一次读很多字节，但不向磁盘中写入，只是先放到内存里。等凑够了缓冲区大小的时候一次性写入磁盘，这种方式可以减少磁盘操作次数，速度就会提高很多！这就是两者的区别
+楼+1； BUFFERED缓冲区，是综合下来效率高，而不是读是速度比谁快。
+
+
+
+没有缓存区，那么每read一次，就会发送一次IO操作；
+有缓存区，第一次read时，会一下读取x个字节放入缓存区，然后后续的read都会从缓存中读取，当read到缓存区末尾时，会再次读取x个字节放入缓存区。
+
+很明显，第二种方式，会减少IO操作，效率更高，缺点就是，内存占用的多。
