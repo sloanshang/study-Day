@@ -1,0 +1,226 @@
+<html>
+<head>
+<title>1.vue-if</title> 
+<script src="./js/vue.min.js" ></script>
+<meta charset="utf-8">
+<style>
+  #app {
+    margin: 50px auto;
+    width: 900px;
+  }
+  fieldset {
+
+    border: 1px solid orange;
+    margin-bottom: 50px;
+  }
+
+  fieldset  input {
+
+    width: 200px;
+    height: 30px;
+    margin: 10px auto;
+  }
+  table {
+    width: 900px;
+    border: 2px solid orange ;
+    text-align: center;
+  }
+  thead {
+
+    background: orangered;
+  }
+  #menu{  
+            font-size: 18px;  
+            font-weight: bold;
+            margin: 5px auto;
+            text-align: center;  
+        }  
+  #menu li{  
+            text-decoration: none;  /*去掉前面的圆点*/  
+            list-style: none;  
+            float: left;  
+            border: 1px solid #FFFFFF;  
+            background-color: rgb(233, 241, 241);  
+        }  
+  #menu li a{  
+            color:#040404;  
+            text-decoration: none;  
+            margin:0px;  
+            display: block;  
+            /*内边距（即填充padding）的方式，让每个菜单变得宽一些*/  
+            padding: 2px 2px;               
+            height:30px;   
+            line-height:30px;   
+            text-align:center; 
+            width: 30px; 
+        }
+#menu li a:visited  { 
+background-color:#D200D2; 
+text-decoration:none; 
+}  
+.defaultBack{
+   background-color: rgb(233, 241, 241);  
+}
+.activeBack {
+
+  background-color:blue;
+  
+}
+
+</style>
+</head>
+<div id="app">
+  <h3>增删改查vue页面练习</h3>
+  <fieldset>
+    <legend>录入学生</legend>
+    <div>
+      <span>姓名:</span>
+      <input  type="text"  placeholder="请输入姓名" v-model="newStudent.name"/>
+      <span>年龄:</span>
+      <input  type="text"  placeholder="请输入年龄"  v-model="newStudent.age"/>
+      <span>性别:</span>
+      <select  v-model="newStudent.sex">
+        <option value="男"  >男</option>
+        <option value="女" >女</option>
+      </select>
+      <span>手机:</span>
+      <input  type="text"  placeholder="请输入联系方式" v-model="newStudent.phone"/>
+      <button @click="createNewStudent()">增加</button>  
+    </div> 
+     
+   </fieldset>
+  
+  <table id="students">
+
+  <thead>
+   <tr style=" background:white; ">
+     <td colspan="7">
+        <div style="text-align: right;">
+            共<span style="color:red;font: bold;">{{fiterPerson.length}}</span>条
+            当前显示第<span style="color:red;font: bold; ">{{start + 1}}</span>条到<span style="color:red;font: bold;">{{end}}</span>条 
+          
+
+            设置pageSize：
+             <select  v-model="defaultPageSize">
+                <option value="5">5</option>
+                <option value="10" >10</option>
+                <option value="20" >20</option>
+                <option value="50" >50</option>
+                <option value="100" >100</option>
+                <option value="1000" >1000</option>
+              </select>
+            <input  type="text"  placeholder="查询学生" v-model="search">
+        </div>
+     </td>
+   </tr>
+   
+   <tr>
+   <td>序号</td>
+   <td>姓名</td>
+   <td>年龄</td>
+   <td>性别</td>
+   <td>联系方式</td>
+   <td>删除</td>
+   <td>修改</td>
+  </thead>
+  </tr>
+   
+  <tr v-for="(item,index) in fiterPerson">
+   <td>{{index}}</td>
+   <td><span v-show="item.edit===false">{{item.name}}</span><input  v-show="item.edit===true"  type="text" v-model = "item.name" /></td>
+   <td><span v-show="item.edit===false">{{item.age}}</span><input   v-show="item.edit===true" type="text" v-model = "item.age" /></td>
+   <td><span v-show="item.edit===false">{{item.sex}}</span>
+    <select  v-model="item.sex"  v-show="item.edit===true">
+        <option value="男"  >男</option>
+        <option value="女" >女</option>
+    </select>
+  </td>
+   <td><span v-show="item.edit===false">{{item.phone}}</span><input v-show="item.edit===true"   type="text" v-model = "item.phone" /></td>
+   <td><input  type="button"   value="删除"  @click="deleteStudents(index)"></td>
+   <td><input  type="button"  :value="item.edit===false?'修改':'保存'"  @click="item.edit===false?editStudents(item):updateStudents(item)" />
+    <input  type="button"   v-show= "item.edit===true"  value="取消"  @click="calceUpdate(item)" />
+  </td>
+  </tr>
+ </table>
+ 
+<div>
+ <ul  id="menu" v-for="vli in pageListNumber">
+    <li><a href="#students" @click="nextPage(vli)"  :class="{'activeBack':defaultPageNumber===vli }">{{vli}}</a></li>        
+</ul>  
+</div>
+
+
+
+<script>
+ // 1 .创建vue实例   
+let vm = new Vue({
+    el: '#app',
+    data: {
+      person: [{'name':'张三', 'age':18, 'sex': '男' ,'phone':'13172167450','edit':false},
+               {'name':'李四', 'age':19, 'sex': '女' ,'phone':'13272167450','edit':false},
+               {'name':'王五', 'age':20, 'sex': '男' ,'phone':'13372167450','edit':false},
+               {'name':'赵六', 'age':20, 'sex': '男' ,'phone':'13372167450','edit':false},
+               {'name':'杨过', 'age':20, 'sex': '男' ,'phone':'13372167450','edit':false},
+               {'name':'郭靖', 'age':20, 'sex': '男' ,'phone':'13372167450','edit':false},
+               {'name':'黄蓉', 'age':20, 'sex': '男' ,'phone':'13372167450','edit':false}
+              ],
+      newStudent:{'name':'', 'age':0, 'sex': '男' ,'phone':'','edit':false},
+      search:'',
+      defaultPageNumber:1,
+      defaultPageSize: 5,
+      start:1,
+      end:1,
+      pageListNumber:[1,2,3,4,5,6,7,8,9,10]
+    },
+    computed: {
+      fiterPerson(){
+        var _self = this
+        this.start = (this.defaultPageNumber-1) * this.defaultPageSize
+        this.end = this.defaultPageNumber * this.defaultPageSize
+        console.log(this.person.length)
+        return  this.person.slice(this.start, this.end).filter(function(item){
+            return item.name.indexOf(_self.search) >= 0 
+            || (item.age + '').indexOf(_self.search) >= 0 
+            || (item.sex + '').indexOf(_self.search) >= 0
+            || (item.phone + '').indexOf(_self.search) >= 0  
+        });
+      }
+    },
+    methods: {
+      changeDate:function(index){
+        alert(index)
+        // this.scores[index] = this.scores[index] + 1
+        Vue.set(this.scores, index, this.scores[index] + 1)
+        alert(this.scores[index])
+      },
+      nextPage: function(vli){
+         this.defaultPageNumber  = vli
+      },
+      createNewStudent: function() {
+       //位于最上面
+       this.person.unshift(this.newStudent)
+       this.newStudent = {'name':'', 'age':0, 'sex': '男' ,'phone':'','edit':false}  
+       console.table(this.person)
+       console.table(this.newStudent)
+      },
+      deleteStudents: function(index){
+        this.person.splice(index,1)
+      },
+      editStudents: function(item){
+        console.log(item)
+        item.edit = true
+      },
+      updateStudents: function(item){
+        console.log(item)
+        item.edit = false
+      },
+      calceUpdate: function(item) {
+        item.edit = false
+      }
+      
+    }
+  })
+</script>
+<script>
+</script>
+</html>

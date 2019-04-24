@@ -1,0 +1,26 @@
+
+<script >
+function foo(callback) {
+	alert('foo');
+}
+function test(){
+    alert('test');
+}
+
+function fooA (callback){
+   alert('fooA--1');
+   callback();
+   alert('fooA-2');
+}
+
+
+// foo(test());   // test,  foo                          <1>
+// foo(test) ;    // foo                                 <2>
+// foo( function () {  test();} );   //foo               <3>  
+// fooA(test());   // test  fooA--1                      <4>
+// fooA(test) ;       // fooA--1  test   fooA-2          <5>
+ fooA ( function () {  test(); });    //fooA--1 test fooA-2    <6>              
+
+
+
+</script>

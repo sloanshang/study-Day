@@ -1,0 +1,115 @@
+﻿<html>
+<head>
+<title>17. vue 路由</title> 
+<script src="./js/vue.min.js" ></script>
+<script src="./js/vue-router.min.js" ></script>
+<meta charset="utf-8">
+</head>
+
+<div id="example">
+    <div style="border:1px solid green;">
+      <ul>
+      <li>
+       <router-link to="/java">Java语言</router-link>
+      </li>
+      <li>
+       <router-link to="/c">C语言</router-link>
+      </li>
+      </ul>
+      </div>
+    <div  style=" border:1px solid red;">  <router-view ></router-view>   </div>
+
+</div>
+
+<template  id="java">
+<div>
+  <div>Java语言</div>
+  <div>都说java是最好的语言</div>
+  <router-link to="/java/basicjava">基础班</router-link>
+  <router-link to="/java/bigjava">大神班</router-link>
+  <router-view ></router-view>
+</div>
+</template>
+
+
+<template  id="c">
+    <div>
+        <div>C 语言</div>
+        <div>都说C是最好的语言</div>
+       
+      </div>  
+</template>
+
+
+<template  id="basicjava">
+    <div>
+      <div>Java基础班</div>
+      <div>都说java基础是好</div>
+    </div>
+</template>
+
+<template  id="bigjava">
+    <div>
+      <div>Java大神班</div>
+      <div>都说java大神版</div>
+    </div>
+</template>
+
+
+<script>
+
+// 1. 定义组件
+const java = Vue.extend({
+  template: '#java',   
+ 
+});
+const c = Vue.extend({
+  template: '#c',   
+ 
+});
+
+// 2. 定义子路由
+const basicjava = Vue.extend({
+  template: '#basicjava',   
+ 
+});
+const bigjava = Vue.extend({
+  template: '#bigjava',   
+ });
+
+
+
+// 定义路由
+const router = new VueRouter({
+  routes: [
+    { path: '/java', component: java,
+      children:[
+      {
+        path: '/java/basicjava', component: basicjava
+      },
+      {  
+        path: '/java/bigjava', component: bigjava,
+      },
+      { path: '/', redirect: '/java/basicjava' }
+    ]
+     
+    },
+    { path: '/c', component: c },
+    { path: '/', redirect: '/java' }
+  ]
+});
+
+// 2. 注册路由
+new Vue({
+  el: '#example',
+  router:router,
+  methods: {
+    clickfather() {
+      console.log('父组件')
+      alert('父组件监听事件')
+      
+    }
+  }
+})
+</script>
+</html>

@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Form表单测试请求</title>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+</head>
+<body>
+        <h1>Please upload a file</h1>
+        <form method="post" action="http://localhost:99/form/handleFormUpload" enctype="multipart/form-data">
+            <input type="text" name="name"/>
+            <input type="file" name="file"/>
+            <input type="submit"/>
+        </form>
+        
+        <h1>form2-post-</h1>
+        <form method="post" action="http://localhost:99/one/postJson" enctype="application/x-www-form-urlencoded">
+            <input type="text" name="userName"/>
+            <input type="text" name="pwd"/>
+            <input type="submit"/>
+        </form>
+        
+        <h3>
+        get
+        <form method="get" action="http://localhost:99/form/gettForm?testUrl=因为他只" enctype="x-www-form-urlencoded">
+          
+            <input type="submit"/>
+        </form>
+        
+        <h1>form4-post-json</h1>
+        <form method="post" action="/one/postJson"   enctype='application/json'>
+            <input type="text" name="userName"/>
+            <input type="text" name="pwd"/>
+            <input type="submit"/>
+        </form>
+       
+        <h1>target</h1> 
+        <form action="http://localhost:99/form/postForm" method="post" target="targetIfr">
+         <input type="text" name="userName"/>
+            <input type="text" name="pwd"/>
+            <input type="submit"/>
+        </form>   
+        <iframe name="targetIfr" style="display:none"></iframe> 
+        
+        </h3>
+        
+        
+         <h1>GetImage</h1> 
+        <form action="http://localhost:99/page/postFormImage" method="post" > 
+            <input type="submit"/>
+        </form>   
+       
+       <h4>
+       <img alt="图片" src="http://localhost:99/page/getFormImage">
+       </h4>
+       
+       
+          <h1>deleteForm</h1> 
+        <form action="http://localhost:99/form/DeleteForm" method="post" > 
+            <input type="hidden" name="_method" value="delete" />
+            <input type="button"  value="button" onclick="btn()" />
+        </form>   
+       
+      
+  <script type="text/javascript">
+  function btn(){
+  alert('ceshi');
+  $.ajax({
+	    url: 'http://localhost:99/form/DeleteForm',
+	    type: 'DELETE',
+	    success: function(result) {
+	    	alert('请求成功');
+	    }
+	});
+  
+  }
+  
+  </script>    
+      
+        
+</body>
+</html>

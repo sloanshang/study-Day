@@ -1,0 +1,44 @@
+﻿<html>
+<head>
+<title>15. 这是匿名插槽</title> 
+<script src="./js/vue.min.js" ></script>
+
+<meta charset="utf-8">
+</head>
+
+<div id="example">
+
+    <parent   v-on:selectme="clickfather">
+      这是要替换默认插槽的话，这个姑娘好啊  ！！！
+    </parent>
+</div>
+<template id="child">
+<div>
+<slot>插槽的默认内容</slot>
+<button  v-on:click="clickMe">点击我</button>
+</div>
+</template>
+<script>
+// 全局父组件
+Vue.component('parent', {
+  template: '#child',
+  methods: {
+    clickMe() {
+      alert('子组件发射事件')
+      this.$emit("selectme")    // 此处是个坑，如果改成selectMe，则死活不触发父组件
+    }
+  }
+   });
+// 2. 注册公用组件3
+new Vue({
+  el: '#example',
+  methods: {
+    clickfather() {
+      console.log('父组件')
+      alert('父组件监听事件')
+      
+    }
+  }
+})
+</script>
+</html>

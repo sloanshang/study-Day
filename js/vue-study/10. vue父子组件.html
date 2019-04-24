@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>10.vue 父子组件</title> 
+<script src="./js/vue.min.js" ></script>
+<meta charset="utf-8">
+</head>
+<div id="example">
+    <parent></parent>
+  </div>
+<script>
+// 子组件1
+var Profile = Vue.extend({
+  template: '<p>方法1:{{firstName}} {{lastName}} aka {{alias}}</p>',
+  data: function () {
+    return {
+      firstName: 'Walter',
+      lastName: 'White',
+      alias: 'Heisenberg'
+    }
+  }
+})
+
+//子组件2
+var ProfileChild = {
+  template: '<p>另一种创建方式：{{firstName}} {{lastName}} aka {{alias}}</p>',
+  data: function () {
+    return {
+      firstName: 'Walter',
+      lastName: 'White',
+      alias: 'Heisenberg'
+    }
+  }
+}
+
+
+// 全局父组件
+Vue.component('parent', {
+  components: {
+    'my-component': Profile,
+    'my-component1': ProfileChild
+  },
+  template: '<div> <my-component></my-component><my-component1></my-component1><div>'
+   })
+// 2. 注册公用组件3
+new Vue({
+  el: '#example'
+})
+</script>
+</html>
