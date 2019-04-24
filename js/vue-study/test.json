@@ -1,3 +1,0 @@
-successCallback([{itemID: 1, itemName: 'ItemName1', itemValue: 'itemValue1'},
-    {itemID: 2, itemName: 'ItemName2', itemValue: 'itemValue2'}
-])

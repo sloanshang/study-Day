@@ -1,1 +1,0 @@
-export const pregnancyCheckFormSchema=[ {"k":"f0","n":"日期","v":"","type":"date"}, {"k":"f1","n":"母猪耳号","v":"","type":"dropDownList"},{"k":"f2","n":"结果","v":"" ,"type":"radio"},{"k":"f3","n":"原因","v":""},{"k":"f4","n":"备注","v":""}]

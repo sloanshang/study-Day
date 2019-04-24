@@ -1,6 +1,0 @@
-select *  from  (select   T.ORG_CODE,T.FARM_ORG, sum(case when  T.SUB_CATEGORY_CODE in('40.1090') then VAL else 0 end )  as VAL_40_1090,
-sum(case when  T.SUB_CATEGORY_CODE in (40.1160) then VAL else 0 end  ) as VAL_40_1160,
-sum(case when  T.SUB_CATEGORY_CODE in (20.1192) then VAL else 0 end  ) as VAL_20_1192
- from  tb_sw_bm_eff_week  T 
- group by ORG_CODE,FARM_ORG
- )  T2    where VAL_40_1090>0 and  val_40_1160 <= 0
